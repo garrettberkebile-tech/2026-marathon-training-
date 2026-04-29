@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marathon Training 2026 — Garrett</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      padding: 1.5rem 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-title h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .header-title p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 0.2rem;
+    }
+
+    .countdown-cards {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .countdown-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.75rem;
+      padding: 0.5rem 0.9rem;
+      text-align: center;
+      min-width: 70px;
+    }
+
+    .countdown-card .days {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #fb923c;
+      line-height: 1;
+    }
+
+    .countdown-card .label {
+      font-size: 0.6rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 0.2rem;
+    }
+
+    /* ── ALERT BANNER ── */
+    .alert-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.65rem 0.9rem;
+      background: rgba(251,146,60,0.12);
+      border: 1px solid rgba(251,146,60,0.25);
+      border-radius: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .alert-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+
+    .alert-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #fb923c;
+      margin-bottom: 0.15rem;
+    }
+
+    .alert-message { font-size: 0.82rem; color: #cbd5e1; line-height: 1.4; }
+
+    /* ── NAV TABS ── */
+    nav {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    nav::-webkit-scrollbar { display: none; }
+
+    nav button {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: #64748b;
+      padding: 0.7rem 1.1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    nav button:hover { color: #e2e8f0; }
+
+    nav button.active {
+      color: #fb923c;
+      border-bottom-color: #fb923c;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── CARDS ── */
+    .card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.25rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.2rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-bottom: 1rem;
+    }
+
+    /* ── PHASE BADGE ── */
+    .phase-badge {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── WORKOUT TYPE BADGE ── */
+    .wtype {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+
+    /* ── THIS WEEK ── */
+    .week-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .week-num {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1;
+    }
+
+    .week-meta { flex: 1; }
+    .week-meta h2 { font-size: 1.05rem; font-weight: 700; }
+    .week-meta p { font-size: 0.78rem; color: #64748b; margin-top: 0.1rem; }
+
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 900px) { .day-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 560px) { .day-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .day-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      position: relative;
+      min-height: 120px;
+    }
+
+    .day-card.is-today {
+      border-color: #fb923c;
+      background: linear-gradient(135deg, #fff7ed, #fffbf7);
+    }
+
+    .today-pip {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fb923c;
+      color: white;
+      font-size: 0.55rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .day-card.is-rest { opacity: 0.65; background: #f8fafc; }
+
+    .day-name {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #94a3b8;
+      margin-bottom: 0.15rem;
+    }
+
+    .day-date {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      margin-bottom: 0.4rem;
+    }
+
+    .day-workout {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #1e293b;
+      line-height: 1.4;
+    }
+
+    .day-extra {
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-top: 0.3rem;
+      padding-top: 0.3rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .day-miles {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 0.4rem;
+    }
+
+    /* ── FULL PLAN TABLE ── */
+    .table-wrap { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+
+    th {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.55rem 0.7rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    tr:hover td { background: #f8fafc; }
+    tr.current-week td { background: #fff7ed; }
+
+    .td-workout { max-width: 150px; min-width: 110px; }
+
+    /* ── PACE TABLE ── */
+    .effort-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    /* ── COACHING NOTES ── */
+    .coaching-note {
+      font-size: 0.82rem;
+      padding: 0.5rem 0.75rem;
+      background: #f8fafc;
+      border-radius: 0.5rem;
+      margin-bottom: 0.4rem;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    /* ── NUTRITION ── */
+    .section-header {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #94a3b8;
+      margin: 1.5rem 0 0.6rem;
+    }
+
+    .section-header:first-child { margin-top: 0; }
+
+    .nutrition-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .nutrition-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      border-left: 4px solid;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .nutrition-card h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.2rem; }
+
+    .nutrition-target {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+      white-space: pre-line;
+      line-height: 1.3;
+    }
+
+    .nutrition-why { font-size: 0.75rem; color: #64748b; }
+
+    .nutrition-sources {
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; padding-left: 1.4rem; }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.35rem;
+      top: 0.5rem;
+      bottom: 0;
+      width: 2px;
+      background: #e2e8f0;
+    }
+
+    .timeline-item { position: relative; padding: 0.5rem 0; }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.05rem;
+      top: 0.85rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #fb923c;
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px #fb923c;
+    }
+
+    .timeline-time {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #fb923c;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .timeline-action { font-size: 0.83rem; color: #1e293b; line-height: 1.4; }
+
+    /* ── PRINCIPLES ── */
+    .principle {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      padding: 0.7rem 0.75rem;
+      background: #f8fafc;
+      border-radius: 0.5rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+
+    .principle-num {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #fb923c;
+      background: #fff7ed;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .stat-value { font-size: 2rem; font-weight: 900; color: #fb923c; line-height: 1; }
+    .stat-label { font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+    /* ── PRE-TRAINING ── */
+    .pre-training {
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .pre-big { font-size: 5rem; font-weight: 900; color: #fb923c; line-height: 1; }
+    .pre-training h2 { font-size: 1.2rem; font-weight: 700; margin: 0.5rem 0 0.25rem; }
+    .pre-training p { color: #64748b; font-size: 0.88rem; }
+
+    /* ── CHART LEGEND ── */
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-title">
+      <h1>🏃 Marathon Training 2026</h1>
+      <p>Sub-3:40 Goal &nbsp;·&nbsp; Race Day: Sun Aug 23, 2026</p>
+    </div>
+    <div class="countdown-cards">
+      <div class="countdown-card">
+        <div class="days" id="days-to-race">—</div>
+        <div class="label">Days to Race</div>
+      </div>
+      <div class="countdown-card">
+        <div class="days" id="second-counter">—</div>
+        <div class="label" id="second-label">Days to Start</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert-banner">
+    <div class="alert-icon" id="alert-icon">💡</div>
+    <div>
+      <div class="alert-label" id="alert-label">Today's Tip</div>
+      <div class="alert-message" id="alert-message">Loading…</div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="active" onclick="showTab('this-week', this)">This Week</button>
+    <button onclick="showTab('full-plan', this)">Full Plan</button>
+    <button onclick="showTab('paces', this)">Pace Guide</button>
+    <button onclick="showTab('nutrition', this)">Nutrition</button>
+    <button onclick="showTab('mileage', this)">Mileage</button>
+  </nav>
+</header>
+
+<main>
+  <div id="this-week" class="tab-panel active"></div>
+  <div id="full-plan" class="tab-panel"></div>
+  <div id="paces"     class="tab-panel"></div>
+  <div id="nutrition" class="tab-panel"></div>
+  <div id="mileage"   class="tab-panel"></div>
+</main>
+
+<script>
+// ================================================================
+// DATA
+// ================================================================
+
+const RACE_DATE      = new Date('2026-08-23');
+const TRAINING_START = new Date('2026-05-04');
+
+const PHASE = {
+  'Base':      { bg: '#dbeafe', color: '#1d4ed8' },
+  'Build':     { bg: '#dcfce7', color: '#15803d' },
+  'Peak':      { bg: '#fee2e2', color: '#b91c1c' },
+  'Cutback':   { bg: '#fef9c3', color: '#92400e' },
+  'Taper':     { bg: '#f3e8ff', color: '#7e22ce' },
+  'Race Week': { bg: '#ffe4e6', color: '#9f1239' },
+};
+
+const WTYPE = {
+  easy:      { bg: '#dcfce7', color: '#15803d', label: 'Easy'          },
+  long:      { bg: '#dbeafe', color: '#1d4ed8', label: 'Long Run'      },
+  intervals: { bg: '#ffedd5', color: '#c2410c', label: 'Intervals'     },
+  vo2:       { bg: '#fee2e2', color: '#b91c1c', label: 'VO2 Max'       },
+  tempo:     { bg: '#f3e8ff', color: '#7e22ce', label: 'Tempo'         },
+  mp:        { bg: '#e0e7ff', color: '#4338ca', label: 'Marathon Pace' },
+  rest:      { bg: '#f1f5f9', color: '#64748b', label: 'Rest'          },
+  race:      { bg: '#fce7f3', color: '#be185d', label: 'RACE DAY'      },
+};
+
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+const weeks = [
+  {
+    week:1, phase:'Base', weekOf:'2026-05-04', totalMiles:24,
+    Mon:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength (full body)', miles:4, type:'easy' },
+    Tue:{ workout:'5 mi: 1 wu + 5×400m @ 7:20 (400m jog) + 1 cd', extra:'Plyo', miles:5, type:'intervals' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 9 mi @ 9:30/mi', miles:9, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 3 mi @ 9:45/mi', extra:'Strength (light)', miles:3, type:'easy' },
+    Sun:{ workout:'Easy 3 mi @ 10:00/mi', miles:3, type:'easy' },
+  },
+  {
+    week:2, phase:'Base', weekOf:'2026-05-11', totalMiles:27,
+    Mon:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength', miles:4, type:'easy' },
+    Tue:{ workout:'VO2 4×4: 1.5 wu + 4×(4 min @ 7:15 / 3 min jog) + 1.5 cd', extra:'Plyo', miles:6, type:'vo2' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 10 mi @ 9:30/mi', miles:10, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength', miles:4, type:'easy' },
+    Sun:{ workout:'Easy 3 mi @ 10:00/mi', miles:3, type:'easy' },
+  },
+  {
+    week:3, phase:'Base', weekOf:'2026-05-18', totalMiles:30,
+    Mon:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Tue:{ workout:'6 mi: 1 wu + 5×800m @ 7:25 (2:00 jog) + 1 cd', extra:'Plyo', miles:6, type:'intervals' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 11 mi @ 9:30/mi', miles:11, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength', miles:4, type:'easy' },
+    Sun:{ workout:'Tempo 4 mi: 1 wu + 2 @ 7:55 + 1 cd', miles:4, type:'tempo' },
+  },
+  {
+    week:4, phase:'Cutback', weekOf:'2026-05-25', totalMiles:24,
+    Mon:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength', miles:4, type:'easy' },
+    Tue:{ workout:'VO2 3×4: 1 wu + 3×(4 min @ 7:15 / 3 min jog) + 1 cd', extra:'Plyo (light)', miles:5, type:'vo2' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 8 mi @ 9:30/mi', miles:8, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength', miles:4, type:'easy' },
+    Sun:{ workout:'Easy 3 mi @ 10:00/mi', miles:3, type:'easy' },
+  },
+  {
+    week:5, phase:'Build', weekOf:'2026-06-01', totalMiles:32,
+    Mon:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Tue:{ workout:'6 mi: 1 wu + 6×800m @ 7:25 (2:00 jog) + 1 cd', extra:'Plyo', miles:6, type:'intervals' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 12 mi @ 9:30/mi', miles:12, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength', miles:4, type:'easy' },
+    Sun:{ workout:'Tempo 5 mi: 1 wu + 3 @ 7:55 + 1 cd', miles:5, type:'tempo' },
+  },
+  {
+    week:6, phase:'Build', weekOf:'2026-06-08', totalMiles:35,
+    Mon:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Tue:{ workout:'VO2 4×4: 2 wu + 4×(4 min @ 7:15 / 3 min jog) + 2 cd', extra:'Plyo', miles:7, type:'vo2' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 13 mi @ 9:30/mi', miles:13, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Sun:{ workout:'Tempo 5 mi: 1 wu + 3 @ 7:55 + 1 cd', miles:5, type:'tempo' },
+  },
+  {
+    week:7, phase:'Build', weekOf:'2026-06-15', totalMiles:38,
+    Mon:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Tue:{ workout:'7 mi: 1 wu + 4×1 mi @ 7:30 (2:30 jog) + 1 cd', extra:'Plyo', miles:7, type:'intervals' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'LR 14 mi: 10 easy + 4 @ MP (8:23/mi)', miles:14, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Sun:{ workout:'Tempo 7 mi: 1 wu + 5 @ 7:55 + 1 cd', miles:7, type:'tempo' },
+  },
+  {
+    week:8, phase:'Cutback', weekOf:'2026-06-22', totalMiles:30,
+    Mon:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength', miles:4, type:'easy' },
+    Tue:{ workout:'VO2 4×4: 1.5 wu + 4×(4 min @ 7:15 / 3 min jog) + 1.5 cd', extra:'Plyo', miles:6, type:'vo2' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 11 mi @ 9:30/mi', miles:11, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength', miles:4, type:'easy' },
+    Sun:{ workout:'Tempo 5 mi: 1 wu + 3 @ 7:55 + 1 cd', miles:5, type:'tempo' },
+  },
+  {
+    week:9, phase:'Peak', weekOf:'2026-06-29', totalMiles:41,
+    Mon:{ workout:'Easy 6 mi @ 9:45/mi', extra:'Strength', miles:6, type:'easy' },
+    Tue:{ workout:'7 mi: 1 wu + 5×1 mi @ 7:30 + 1 cd', extra:'Plyo', miles:7, type:'intervals' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'LR 16 mi: 11 easy + 5 @ MP', miles:16, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Sun:{ workout:'Tempo 7 mi: 1 wu + 5 @ 7:55 + 1 cd', miles:7, type:'tempo' },
+  },
+  {
+    week:10, phase:'Peak', weekOf:'2026-07-06', totalMiles:44,
+    Mon:{ workout:'Easy 6 mi @ 9:45/mi', extra:'Strength', miles:6, type:'easy' },
+    Tue:{ workout:'VO2 4×4: 2.5 wu + 4×(4 min @ 7:15 / 3 min jog) + 2 cd', extra:'Plyo', miles:8, type:'vo2' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'LR 18 mi: 12 easy + 6 @ MP', miles:18, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Sun:{ workout:'Tempo 7 mi: 1 wu + 5 @ 7:55 + 1 cd', miles:7, type:'tempo' },
+  },
+  {
+    week:11, phase:'Peak', weekOf:'2026-07-13', totalMiles:45,
+    Mon:{ workout:'Easy 6 mi @ 9:45/mi', extra:'Strength', miles:6, type:'easy' },
+    Tue:{ workout:'8 mi: 1 wu + 4×1 mi @ 7:30 + 1 cd', extra:'Plyo', miles:8, type:'intervals' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'LR 18 mi: 12 easy + 6 @ MP', miles:18, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Sun:{ workout:'MP 8 mi: 1 wu + 6 @ 8:23 + 1 cd', miles:8, type:'mp' },
+  },
+  {
+    week:12, phase:'Cutback', weekOf:'2026-07-20', totalMiles:36,
+    Mon:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Tue:{ workout:'VO2 4×4: 1.5 wu + 4×(4 min @ 7:15 / 3 min jog) + 1.5 cd', extra:'Plyo', miles:6, type:'vo2' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 14 mi @ 9:30/mi', miles:14, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength', miles:5, type:'easy' },
+    Sun:{ workout:'Tempo 6 mi: 1 wu + 4 @ 7:55 + 1 cd', miles:6, type:'tempo' },
+  },
+  {
+    week:13, phase:'Peak', weekOf:'2026-07-27', totalMiles:48,
+    Mon:{ workout:'Easy 6 mi @ 9:45/mi', extra:'Strength', miles:6, type:'easy' },
+    Tue:{ workout:'8 mi: 1 wu + 5×1 mi @ 7:30 + 1 cd', extra:'Plyo', miles:8, type:'intervals' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'LR 20 mi: 12 easy + 8 @ MP — peak long run!', miles:20, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 6 mi @ 9:45/mi', extra:'Strength', miles:6, type:'easy' },
+    Sun:{ workout:'MP 8 mi: 1 wu + 6 @ 8:23 + 1 cd', miles:8, type:'mp' },
+  },
+  {
+    week:14, phase:'Taper', weekOf:'2026-08-03', totalMiles:38,
+    Mon:{ workout:'Easy 5 mi @ 9:45/mi', extra:'Strength (lighter)', miles:5, type:'easy' },
+    Tue:{ workout:'VO2 3×4: 1.5 wu + 3×(4 min @ 7:20 / 3 min jog) + 2 cd', extra:'Plyo (light)', miles:6, type:'vo2' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'LR 16 mi: 12 easy + 4 @ MP', miles:16, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength (light)', miles:4, type:'easy' },
+    Sun:{ workout:'MP 7 mi: 1 wu + 5 @ 8:23 + 1 cd', miles:7, type:'mp' },
+  },
+  {
+    week:15, phase:'Taper', weekOf:'2026-08-10', totalMiles:28,
+    Mon:{ workout:'Easy 4 mi @ 9:45/mi', extra:'Strength (light, no PRs)', miles:4, type:'easy' },
+    Tue:{ workout:'5 mi: 1 wu + 4×600m @ 7:20 + 1 cd', extra:'Plyo (light)', miles:5, type:'intervals' },
+    Wed:{ workout:'Rest', miles:0, type:'rest' },
+    Thu:{ workout:'Long Run 12 mi @ 9:30/mi', miles:12, type:'long' },
+    Fri:{ workout:'Rest', miles:0, type:'rest' },
+    Sat:{ workout:'Easy 3 mi @ 9:45/mi', miles:3, type:'easy' },
+    Sun:{ workout:'MP 4 mi: 1 wu + 2 @ 8:23 + 1 cd', miles:4, type:'mp' },
+  },
+  {
+    week:16, phase:'Race Week', weekOf:'2026-08-17', totalMiles:38.2,
+    Mon:{ workout:'Easy 3 mi @ 9:45/mi', miles:3, type:'easy' },
+    Tue:{ workout:'4 mi: 1 wu + 4×400m @ MP + 1 cd (sharpening)', miles:4, type:'intervals' },
+    Wed:{ workout:'Easy 3 mi + 4 strides', miles:3, type:'easy' },
+    Thu:{ workout:'Rest — travel/expo day', miles:0, type:'rest' },
+    Fri:{ workout:'Shakeout 2 mi very easy + 4 strides', miles:2, type:'easy' },
+    Sat:{ workout:'Rest — feet up, hydrate', miles:0, type:'rest' },
+    Sun:{ workout:'RACE DAY — 26.2 mi @ 8:23/mi 🏁 Sub-3:40!', miles:26.2, type:'race' },
+  },
+];
+
+const paceTargets = [
+  { type:'Recovery / Easy',    mi:'9:30 – 10:00', km:'5:54 – 6:13', feel:'Conversational. Nose-breathing easy. Build aerobic base.',                                         color:'#22c55e' },
+  { type:'Long Run',           mi:'9:00 – 9:30',  km:'5:35 – 5:54', feel:'Steady, comfortable. ~40–60 sec slower than MP.',                                                  color:'#3b82f6' },
+  { type:'Marathon Pace (MP)', mi:'8:23',          km:'5:12',         feel:'Goal race pace. Should feel "comfortably fast."',                                                  color:'#6366f1' },
+  { type:'Tempo / Threshold',  mi:'7:50 – 8:00',  km:'4:52 – 4:58', feel:'Comfortably hard. Could hold ~1 hour in a race.',                                                  color:'#8b5cf6' },
+  { type:'VO2 Max (4×4 reps)', mi:'7:10 – 7:20',  km:'4:27 – 4:33', feel:'4-min reps at ~95% max HR. Very hard but completable. 3-min jog between.',                        color:'#ef4444' },
+  { type:'Intervals (5K pace)',mi:'7:15 – 7:30',  km:'4:30 – 4:40', feel:'800m–1 mi reps. Hard but controlled. Jog recovery.',                                               color:'#f97316' },
+  { type:'Strides',            mi:'6:30 – 7:00',  km:'4:02 – 4:21', feel:'20–30 sec accelerations with full recovery. Mechanics work.',                                      color:'#ec4899' },
+];
+
+const coachingNotes = [
+  "Easy/recovery means EASY — if you can't talk in full sentences, slow down.",
+  'Adjust paces 10–20 sec/mi slower in heat above 70°F or high humidity.',
+  'Quality sessions (intervals + tempo) are bookended by a 1-mi warm-up and 1-mi cool-down.',
+  'Long runs: run by effort, not pace. Last 4–6 miles at MP only when noted.',
+  'Strength days: lower-body lifts kept lighter on Sat (24h before tempo); Mon can go heavier.',
+  'Plyo on Tuesday is paired with intervals — same neuromuscular stress, consolidated recovery.',
+  'VO2 4×4 (Norwegian) every other Tue: 4 reps × 4 min @ ~7:15/mi, 3-min jog between. Proven aerobic booster.',
+  'Skip a workout before you skip a rest day. Sleep > miles.',
+];
+
+const dailyTargets = [
+  { name:'Carbohydrates', target:'5–7 g/kg body weight\n(~350–500g for ~70kg runner)', why:'Primary fuel. Marathon training depletes glycogen daily.',                   sources:'Oats, rice, pasta, potatoes, fruit, bagels, tortillas', color:'#f59e0b' },
+  { name:'Protein',       target:'1.4–1.7 g/kg\n(~100–120g)',                          why:'Muscle repair, especially after strength + long runs.',                      sources:'Eggs, chicken, fish, Greek yogurt, beans, tofu, whey',  color:'#3b82f6' },
+  { name:'Fat',           target:'0.8–1.0 g/kg\n(~55–70g)',                            why:'Hormone health, satiety, fat-soluble vitamins.',                            sources:'Avocado, nuts, olive oil, salmon, eggs',                 color:'#10b981' },
+  { name:'Fluids',        target:'~3–4L/day\n(more in heat)',                          why:'Daily hydration baseline before workout fluids.',                           sources:'Water + 1–2 electrolyte drinks on hot days',            color:'#06b6d4' },
+  { name:'Sodium',        target:'2–4g/day\n(more if heavy sweater)',                  why:'Replaces sweat losses, prevents cramping.',                                 sources:'Salt food normally, electrolyte drinks, broth',          color:'#f97316' },
+  { name:'Iron',          target:'15–18 mg/day',                                       why:'Critical for oxygen delivery. Distance runners often run low.',              sources:'Red meat, lentils, spinach, fortified cereal',           color:'#ef4444' },
+];
+
+const aroundRun = [
+  { when:'Pre-run (easy/short)',   what:'Banana or toast w/ honey',                      amount:'~1 hr before, 30–50g carbs',          notes:'Skippable for runs under 60 min if you tolerate fasted training' },
+  { when:'Pre-run (long/quality)', what:'Oatmeal + banana + nut butter (or bagel + jam)',amount:'2 hr before, 80–100g carbs',          notes:'Test the same breakfast you plan to eat on race morning' },
+  { when:'During run < 75 min',    what:'Water',                                          amount:'Sip as needed',                       notes:'No fuel needed for short runs' },
+  { when:'During run 75–120 min',  what:'Sports drink OR 1 gel + water',                 amount:'30–45g carbs/hr',                     notes:'Practice gel fueling on long runs — gut needs training too' },
+  { when:'During run > 2 hr',      what:'Gels + sports drink',                           amount:'60–90g carbs/hr',                     notes:'Mix glucose + fructose for higher absorption (Maurten 320, SIS Beta Fuel)' },
+  { when:'Post-run (≤30 min)',     what:'Carbs + protein 3:1 or 4:1',                   amount:'~60–80g carbs + 20–25g protein',      notes:'Chocolate milk, smoothie, recovery shake, rice + chicken' },
+  { when:'Post-long-run meal',     what:'Real food: carbs + protein + veg',              amount:'Within 2 hr of finishing',            notes:'Pasta + meat sauce, burrito bowl, etc.' },
+];
+
+const hydration = [
+  { timing:'2–3 hr pre-run',        fluid:'Water + electrolytes',      amount:'16–20 oz (500–600 mL)',       tip:'Stop 60 min before to allow a bathroom stop' },
+  { timing:'15 min pre-run',        fluid:'Small sip if thirsty',      amount:'4–8 oz',                      tip:'Just to wet the mouth, not load' },
+  { timing:'During run (cool)',      fluid:'Water or sports drink',     amount:'4–8 oz every 15–20 min',      tip:'About 16–24 oz/hr total' },
+  { timing:'During run (hot/humid)',fluid:'Sports drink w/ sodium',    amount:'20–32 oz/hr + 500–700mg Na',  tip:'Weigh before/after a hot long run to learn your sweat rate' },
+  { timing:'Post-run',              fluid:'Water + electrolytes',      amount:'~24 oz per lb lost',           tip:'Pee should be pale yellow within 2–3 hr' },
+];
+
+const raceDayPlan = [
+  { time:'3 days out',             action:'Carb-load: bump to ~8–10g/kg/day. Reduce fiber. Drink 3–4L/day with electrolytes.' },
+  { time:'Day before',             action:'Familiar carb-heavy meal early evening (pasta, rice). No new foods. No alcohol. Hydrate steadily.' },
+  { time:'Race morning (3 hr pre)',action:'Practiced breakfast: ~100–120g carbs. Bagel + PB + banana + honey, or oatmeal + maple syrup.' },
+  { time:'60–90 min pre-race',     action:'16–20 oz water w/ electrolytes. Last bathroom stop.' },
+  { time:'15 min pre-race',        action:'1 gel + sip of water. Prime the system.' },
+  { time:'Mile 5',                 action:'1 gel + water' },
+  { time:'Mile 10',                action:'1 gel + water' },
+  { time:'Mile 14–15',             action:'1 gel + sports drink at aid station' },
+  { time:'Mile 19–20',             action:'1 gel + water (caffeine gel here helps)' },
+  { time:'Mile 23–24',             action:'Optional ½ gel if legs are flagging — not necessary for everyone' },
+  { time:'Aid stations',           action:'Drink at every station after mile 4. Walk 5 sec to actually get fluid down.' },
+  { time:'Fuel goal',              action:'60–75g carbs/hr = ~5–6 gels over the race + sports drink at stations.' },
+];
+
+const keyPrinciples = [
+  'Practice race-day fueling on every long run. Your gut adapts — train it like any other system.',
+  'Use the SAME products on race day that you used in training. Never try anything new on race day.',
+  'Aim for 60–90g carbs/hour during long runs > 90 min. Modern research supports the higher end.',
+  'Sodium needs vary widely. If you cramp or finish with white salt rings on your kit, increase intake.',
+  'Caffeine 30–60 min pre-run improves performance ~2–3%. Test in training, dose 3–6 mg/kg.',
+  "Don't undereat. Marathon training burns 400–700 extra kcal per running hour. RED-S is real.",
+  'Recovery nutrition matters most after long runs and quality sessions — eat within 30–60 min.',
+  'Weigh yourself before & after a hot long run to estimate sweat rate (1 lb lost = 16 oz fluid needed).',
+];
+
+// ================================================================
+// HELPERS
+// ================================================================
+
+function daysBetween(a, b) {
+  const ms = b - a;
+  return Math.floor(ms / (1000 * 60 * 60 * 24));
+}
+
+function fmtDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+function phaseBadge(phase, small) {
+  const s = PHASE[phase] || PHASE['Base'];
+  const fs = small ? 'font-size:0.62rem;' : '';
+  return `<span class="phase-badge" style="background:${s.bg};color:${s.color};${fs}">${phase}</span>`;
+}
+
+function wtypeBadge(type) {
+  const w = WTYPE[type] || WTYPE.easy;
+  return `<span class="wtype" style="background:${w.bg};color:${w.color}">${w.label}</span>`;
+}
+
+// Figure out which training week we're in (0-indexed), and what day name today is.
+function getTrainingState() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const start = new Date(TRAINING_START);
+  start.setHours(0,0,0,0);
+  const diff = daysBetween(start, today);
+
+  if (diff < 0) return { state:'pre', daysUntilStart: -diff };
+  if (diff >= 16 * 7) return { state:'post' };
+
+  const weekIdx = Math.floor(diff / 7);
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const todayName = dayNames[today.getDay()];
+  return { state:'training', weekIdx, week: weeks[weekIdx], todayName };
+}
+
+function getAlert(ts) {
+  if (ts.state === 'pre') {
+    const d = ts.daysUntilStart;
+    return { icon:'🗓️', label:`Training starts in ${d} day${d!==1?'s':''}`, message:'Use this time to dial in your pre-run breakfast, get consistent sleep, and review the full plan below.' };
+  }
+  if (ts.state === 'post') {
+    return { icon:'🏅', label:'Race Complete!', message:'You ran a marathon. Rest, recover, and be proud of yourself.' };
+  }
+  const { week, todayName } = ts;
+  const day = week[todayName];
+  if (!day) return { icon:'📅', label:'Training Day', message:'Check your plan.' };
+  const map = {
+    rest:      { icon:'😴', label:'Rest Day',           message:'Recovery is where adaptation happens. Eat plenty of protein + carbs, drink 3L water, sleep 8+ hours.' },
+    easy:      { icon:'🟢', label:'Easy Run Day',        message:'Keep it truly conversational pace. Eat normally. 3–4L water today. Light carb snack 1 hr before if running over 60 min.' },
+    long:      { icon:'🔵', label:'Long Run Day!',       message:'Eat 80–100g carbs 2 hrs before. Bring 1 gel per 45 min of running. Have your recovery meal planned before you leave.' },
+    intervals: { icon:'🟠', label:'Interval Day',        message:'Quality workout! Eat a carb-rich meal 2 hrs before. Stay well hydrated. Recovery shake within 30 min of finishing.' },
+    vo2:       { icon:'🔴', label:'VO2 Max Day',         message:'Hardest session of the week. Carbs 2 hrs before. Take those 3-min jog recoveries seriously. Protein + carbs within 30 min post-run.' },
+    tempo:     { icon:'🟣', label:'Tempo Day',           message:'Comfortably hard for the tempo miles. Fuel up 2 hrs before. Do not skip the cool-down jog.' },
+    mp:        { icon:'🔷', label:'Marathon Pace Day',   message:'Practice your race-day effort and fueling. Eat what you would eat race morning. Hit 8:23/mi for MP segments.' },
+    race:      { icon:'🏁', label:'RACE DAY — Sub-3:40!',message:'Follow your practiced plan. Bagel + PB + banana 3 hrs before. Gel at miles 5, 10, 14–15, 19–20. Drink at every aid station after mile 4.' },
+  };
+  return map[day.type] || map.easy;
+}
+
+// ================================================================
+// RENDER — COUNTDOWNS & ALERT
+// ================================================================
+
+function renderCountdowns() {
+  const today = new Date();
+  const toRace = Math.max(0, daysBetween(today, RACE_DATE));
+  document.getElementById('days-to-race').textContent = toRace;
+
+  const ts = getTrainingState();
+  const el = document.getElementById('second-counter');
+  const lb = document.getElementById('second-label');
+
+  if (ts.state === 'pre') {
+    el.textContent = ts.daysUntilStart;
+    lb.textContent = 'Days to Start';
+  } else if (ts.state === 'training') {
+    el.textContent = ts.weekIdx + 1;
+    lb.textContent = 'Current Week';
+  } else {
+    el.textContent = '✓';
+    lb.textContent = 'Done!';
+  }
+}
+
+function renderAlert() {
+  const ts = getTrainingState();
+  const a = getAlert(ts);
+  document.getElementById('alert-icon').textContent = a.icon;
+  document.getElementById('alert-label').textContent = a.label;
+  document.getElementById('alert-message').textContent = a.message;
+}
+
+// ================================================================
+// RENDER — THIS WEEK
+// ================================================================
+
+function renderThisWeek() {
+  const ts = getTrainingState();
+  const el = document.getElementById('this-week');
+
+  if (ts.state === 'pre') {
+    el.innerHTML =
+      `<div class="card pre-training">
+        <div class="pre-big">${ts.daysUntilStart}</div>
+        <h2>Days until training begins</h2>
+        <p>Week 1 kicks off May 4, 2026 &nbsp;·&nbsp; Race Day: Aug 23, 2026</p>
+        <br><p>Here's a preview of Week 1 to get you ready:</p>
+       </div>
+       ${weekCard(weeks[0], null)}`;
+    return;
+  }
+
+  if (ts.state === 'post') {
+    el.innerHTML = `<div class="card pre-training"><div class="pre-big">🏅</div><h2>Training Complete!</h2><p>Sub-3:40. Let's go.</p></div>`;
+    return;
+  }
+
+  el.innerHTML = weekCard(ts.week, ts.todayName);
+}
+
+function weekCard(week, todayName) {
+  const start = new Date(week.weekOf);
+  const end   = new Date(start); end.setDate(end.getDate() + 6);
+
+  const cells = DAYS.map((day, i) => {
+    const d = week[day];
+    const dayDate = new Date(start); dayDate.setDate(dayDate.getDate() + i);
+    const isToday = day === todayName;
+    const isRest  = d.type === 'rest';
+
+    let cls = 'day-card';
+    if (isToday) cls += ' is-today';
+    if (isRest)  cls += ' is-rest';
+
+    return `<div class="${cls}">
+      ${isToday ? '<div class="today-pip">TODAY</div>' : ''}
+      <div class="day-name">${day}</div>
+      <div class="day-date">${dayDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
+      ${wtypeBadge(d.type)}
+      <div class="day-workout">${d.workout}</div>
+      ${d.extra ? `<div class="day-extra">+ ${d.extra}</div>` : ''}
+      ${d.miles > 0 ? `<div class="day-miles">${d.miles} mi</div>` : ''}
+    </div>`;
+  }).join('');
+
+  return `<div class="card">
+    <div class="week-header">
+      <div class="week-num">${week.week}</div>
+      <div class="week-meta">
+        <h2>Week ${week.week} of 16 &mdash; ${week.phase}</h2>
+        <p>${fmtDate(week.weekOf)} &ndash; ${fmtDate(end.toISOString().split('T')[0])} &nbsp;·&nbsp; ${week.totalMiles} miles this week</p>
+      </div>
+      ${phaseBadge(week.phase)}
+    </div>
+    <div class="day-grid">${cells}</div>
+  </div>`;
+}
+
+// ================================================================
+// RENDER — FULL PLAN
+// ================================================================
+
+function renderFullPlan() {
+  const ts = getTrainingState();
+  const rows = weeks.map(w => {
+    const ps = PHASE[w.phase] || PHASE['Base'];
+    const isCurrent = ts.state === 'training' && ts.weekIdx === w.week - 1;
+
+    const dayCells = DAYS.map(day => {
+      const d = w[day];
+      const wt = WTYPE[d.type] || WTYPE.easy;
+      return `<td class="td-workout">
+        <span class="wtype" style="background:${wt.bg};color:${wt.color};font-size:0.55rem">${wt.label}</span><br>
+        ${d.workout}
+        ${d.extra ? `<br><span style="color:#94a3b8;font-size:0.68rem">+ ${d.extra}</span>` : ''}
+      </td>`;
+    }).join('');
+
+    return `<tr class="${isCurrent ? 'current-week' : ''}">
+      <td><strong>${w.week}</strong>${isCurrent ? ' ←' : ''}</td>
+      <td>${phaseBadge(w.phase, true)}</td>
+      <td style="white-space:nowrap">${fmtDate(w.weekOf)}</td>
+      ${dayCells}
+      <td><strong>${w.totalMiles}</strong></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('full-plan').innerHTML = `
+    <div class="card">
+      <div class="card-title">16-Week Training Plan</div>
+      <div class="card-subtitle">5 runs/week &nbsp;·&nbsp; Long run Thursday &nbsp;·&nbsp; Strength Mon + Sat &nbsp;·&nbsp; Plyo Tuesday</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Wk</th><th>Phase</th><th>Week of</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th><th>Miles</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ================================================================
+// RENDER — PACES
+// ================================================================
+
+function renderPaces() {
+  const rows = paceTargets.map(p => `
+    <tr>
+      <td><span class="effort-dot" style="background:${p.color}"></span><strong>${p.type}</strong></td>
+      <td><strong>${p.mi}</strong></td>
+      <td>${p.km}</td>
+      <td style="color:#475569">${p.feel}</td>
+    </tr>`).join('');
+
+  const notes = coachingNotes.map(n => `<div class="coaching-note">• ${n}</div>`).join('');
+
+  document.getElementById('paces').innerHTML = `
+    <div class="card">
+      <div class="card-title">Pace Targets — Sub-3:40</div>
+      <div class="card-subtitle">Marathon Pace: 8:23/mi &nbsp;·&nbsp; Race: Aug 23, 2026</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Workout Type</th><th>Pace (min/mi)</th><th>Pace (min/km)</th><th>How It Should Feel</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Coaching Notes</div>
+      <br>${notes}
+    </div>`;
+}
+
+// ================================================================
+// RENDER — NUTRITION
+// ================================================================
+
+function renderNutrition() {
+  const targets = dailyTargets.map(d => `
+    <div class="nutrition-card" style="border-color:${d.color}">
+      <h3>${d.name}</h3>
+      <div class="nutrition-target" style="color:${d.color}">${d.target}</div>
+      <div class="nutrition-why">${d.why}</div>
+      <div class="nutrition-sources"><strong>Sources:</strong> ${d.sources}</div>
+    </div>`).join('');
+
+  const aroundRows = aroundRun.map(r => `
+    <tr>
+      <td><strong>${r.when}</strong></td>
+      <td>${r.what}</td>
+      <td style="color:#fb923c;font-weight:600">${r.amount}</td>
+      <td style="color:#64748b;font-size:0.74rem">${r.notes}</td>
+    </tr>`).join('');
+
+  const hydRows = hydration.map(h => `
+    <tr>
+      <td><strong style="color:#3b82f6">${h.timing}</strong></td>
+      <td>${h.fluid}</td>
+      <td style="font-weight:600;color:#0f172a">${h.amount}</td>
+      <td style="color:#64748b;font-size:0.74rem">${h.tip}</td>
+    </tr>`).join('');
+
+  const timeline = raceDayPlan.map(r => `
+    <div class="timeline-item">
+      <div class="timeline-time">${r.time}</div>
+      <div class="timeline-action">${r.action}</div>
+    </div>`).join('');
+
+  const principles = keyPrinciples.map((p, i) => `
+    <div class="principle">
+      <div class="principle-num">${i+1}</div>
+      <div>${p}</div>
+    </div>`).join('');
+
+  document.getElementById('nutrition').innerHTML = `
+    <div class="section-header">Daily Targets (Training Days)</div>
+    <div class="nutrition-grid">${targets}</div>
+
+    <div class="section-header">Around the Run</div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>When</th><th>What</th><th>Amount / Timing</th><th>Notes</th></tr></thead>
+          <tbody>${aroundRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-header">Hydration Strategy</div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Timing</th><th>Fluid</th><th>Amount</th><th>Tip</th></tr></thead>
+          <tbody>${hydRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-header">Race Day Game Plan — Aug 23, 2026</div>
+    <div class="card">
+      <div class="timeline">${timeline}</div>
+    </div>
+
+    <div class="section-header">Key Principles</div>
+    <div>${principles}</div>`;
+}
+
+// ================================================================
+// RENDER — MILEAGE CHART
+// ================================================================
+
+function renderMileage() {
+  const total = weeks.reduce((s, w) => s + w.totalMiles, 0);
+  const peak  = Math.max(...weeks.map(w => w.totalMiles));
+  const peakW = weeks.find(w => w.totalMiles === peak);
+
+  const PHASE_CHART_COLORS = {
+    'Base':      '#3b82f6',
+    'Build':     '#10b981',
+    'Peak':      '#ef4444',
+    'Cutback':   '#f59e0b',
+    'Taper':     '#8b5cf6',
+    'Race Week': '#f43f5e',
+  };
+
+  const stats = [
+    { value: Math.round(total),     label: 'Total Training Miles' },
+    { value: peak,                  label: `Peak Week (Wk ${peakW.week})` },
+    { value: 16,                    label: 'Training Weeks' },
+    { value: '3:40',                label: 'Goal Finish Time' },
+  ];
+
+  const statCards = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-value">${s.value}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>`).join('');
+
+  const legendItems = Object.entries(PHASE_CHART_COLORS).map(([phase, color]) => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${color}"></div>
+      ${phase}
+    </div>`).join('');
+
+  document.getElementById('mileage').innerHTML = `
+    <div class="stats-grid">${statCards}</div>
+    <div class="card">
+      <div class="card-title">Weekly Mileage Progression</div>
+      <div class="card-subtitle">16-week build from 24 to 48 miles/week (peak)</div>
+      <canvas id="mileage-chart" height="220"></canvas>
+      <div class="chart-legend">${legendItems}</div>
+    </div>`;
+
+  const ctx = document.getElementById('mileage-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: weeks.map(w => `Wk ${w.week}`),
+      datasets: [{
+        data: weeks.map(w => w.totalMiles),
+        backgroundColor: weeks.map(w => PHASE_CHART_COLORS[w.phase] + 'cc'),
+        borderColor:     weeks.map(w => PHASE_CHART_COLORS[w.phase]),
+        borderWidth: 2,
+        borderRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const w = weeks[ctx.dataIndex];
+              return [`${ctx.raw} miles`, `Phase: ${w.phase}`];
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
+        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } },
+      }
+    }
+  });
+}
+
+// ================================================================
+// TAB SWITCHING
+// ================================================================
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ================================================================
+// INIT
+// ================================================================
+
+renderCountdowns();
+renderAlert();
+renderThisWeek();
+renderFullPlan();
+renderPaces();
+renderNutrition();
+renderMileage();
+</script>
+</body>
+</html>
