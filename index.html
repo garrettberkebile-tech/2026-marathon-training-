@@ -4,26 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Marathon Training 2026 — Garrett</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --neon: #39FF14;
+      --neon-dim: rgba(57, 255, 20, 0.15);
+      --neon-glow: 0 0 10px rgba(57,255,20,0.6), 0 0 25px rgba(57,255,20,0.25);
+      --black: #0a0a0a;
+      --card: #111111;
+      --card-border: #1f1f1f;
+      --off-white: #F0EBE3;
+      --muted: #888888;
+      --very-muted: #3a3a3a;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: #f1f5f9;
-      color: #1e293b;
+      font-family: 'Barlow', -apple-system, sans-serif;
+      background: var(--black);
+      color: var(--off-white);
       min-height: 100vh;
     }
 
     /* ── HEADER ── */
     header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      color: white;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.92) 100%),
+        url('https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=1400&auto=format&fit=crop&q=80') center/cover no-repeat;
+      color: var(--off-white);
       padding: 1.5rem 1.5rem 0;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border-bottom: 1px solid var(--card-border);
     }
 
     .header-top {
@@ -36,43 +53,44 @@
     }
 
     .header-title h1 {
-      font-size: 1.4rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: var(--off-white);
+      line-height: 1;
     }
 
     .header-title p {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      margin-top: 0.2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      letter-spacing: 0.04em;
     }
 
-    .countdown-cards {
-      display: flex;
-      gap: 0.6rem;
-    }
+    .countdown-cards { display: flex; gap: 0.6rem; }
 
     .countdown-card {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 0.5rem;
       padding: 0.5rem 0.9rem;
       text-align: center;
       min-width: 70px;
     }
 
     .countdown-card .days {
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: #fb923c;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--neon);
       line-height: 1;
+      text-shadow: var(--neon-glow);
     }
 
     .countdown-card .label {
-      font-size: 0.6rem;
-      color: #64748b;
+      font-size: 0.58rem;
+      color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       margin-top: 0.2rem;
     }
 
@@ -82,107 +100,93 @@
       align-items: flex-start;
       gap: 0.75rem;
       padding: 0.65rem 0.9rem;
-      background: rgba(251,146,60,0.12);
-      border: 1px solid rgba(251,146,60,0.25);
-      border-radius: 0.6rem;
+      background: var(--neon-dim);
+      border: 1px solid rgba(57,255,20,0.25);
+      border-radius: 0.5rem;
       margin-bottom: 0.75rem;
     }
 
     .alert-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
 
     .alert-label {
-      font-size: 0.65rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #fb923c;
-      margin-bottom: 0.15rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: var(--neon);
+      margin-bottom: 0.1rem;
     }
 
-    .alert-message { font-size: 0.82rem; color: #cbd5e1; line-height: 1.4; }
+    .alert-message { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
 
     /* ── NAV TABS ── */
-    nav {
-      display: flex;
-      gap: 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
+    nav { display: flex; overflow-x: auto; scrollbar-width: none; }
     nav::-webkit-scrollbar { display: none; }
 
     nav button {
+      font-family: 'Bebas Neue', sans-serif;
       background: none;
       border: none;
-      border-bottom: 3px solid transparent;
-      color: #64748b;
-      padding: 0.7rem 1.1rem;
-      font-size: 0.82rem;
-      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      padding: 0.75rem 1.1rem;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
       cursor: pointer;
       white-space: nowrap;
       transition: color 0.15s;
     }
 
-    nav button:hover { color: #e2e8f0; }
+    nav button:hover { color: var(--off-white); }
 
     nav button.active {
-      color: #fb923c;
-      border-bottom-color: #fb923c;
+      color: var(--neon);
+      border-bottom-color: var(--neon);
     }
 
     /* ── MAIN ── */
-    main {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
+    main { max-width: 1140px; margin: 0 auto; padding: 1.5rem; }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
     /* ── CARDS ── */
     .card {
-      background: white;
-      border-radius: 1rem;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
       padding: 1.25rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
       margin-bottom: 1rem;
     }
 
     .card-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 0.2rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      color: var(--off-white);
+      margin-bottom: 0.15rem;
     }
 
-    .card-subtitle {
-      font-size: 0.78rem;
-      color: #64748b;
-      margin-bottom: 1rem;
-    }
+    .card-subtitle { font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem; }
 
     /* ── PHASE BADGE ── */
     .phase-badge {
       display: inline-block;
-      padding: 0.25rem 0.7rem;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      padding: 0.2rem 0.65rem;
+      border-radius: 3px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
     }
 
     /* ── WORKOUT TYPE BADGE ── */
     .wtype {
       display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      font-size: 0.6rem;
+      padding: 0.12rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.58rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       margin-bottom: 0.35rem;
     }
 
@@ -196,15 +200,23 @@
     }
 
     .week-num {
-      font-size: 2.5rem;
-      font-weight: 900;
-      color: #0f172a;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      color: var(--neon);
       line-height: 1;
+      text-shadow: var(--neon-glow);
     }
 
     .week-meta { flex: 1; }
-    .week-meta h2 { font-size: 1.05rem; font-weight: 700; }
-    .week-meta p { font-size: 0.78rem; color: #64748b; margin-top: 0.1rem; }
+
+    .week-meta h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      color: var(--off-white);
+    }
+
+    .week-meta p { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
 
     .day-grid {
       display: grid;
@@ -216,16 +228,18 @@
     @media (max-width: 560px) { .day-grid { grid-template-columns: repeat(2, 1fr); } }
 
     .day-card {
-      border: 2px solid #e2e8f0;
-      border-radius: 0.75rem;
+      border: 1px solid var(--card-border);
+      border-radius: 0.5rem;
       padding: 0.75rem;
       position: relative;
       min-height: 120px;
+      background: #0f0f0f;
     }
 
     .day-card.is-today {
-      border-color: #fb923c;
-      background: linear-gradient(135deg, #fff7ed, #fffbf7);
+      border-color: var(--neon);
+      background: rgba(57,255,20,0.05);
+      box-shadow: 0 0 15px rgba(57,255,20,0.1);
     }
 
     .today-pip {
@@ -233,53 +247,44 @@
       top: -10px;
       left: 50%;
       transform: translateX(-50%);
-      background: #fb923c;
-      color: white;
+      background: var(--neon);
+      color: #000;
       font-size: 0.55rem;
       font-weight: 800;
       letter-spacing: 0.1em;
       padding: 0.15rem 0.55rem;
-      border-radius: 999px;
+      border-radius: 2px;
       white-space: nowrap;
     }
 
-    .day-card.is-rest { opacity: 0.65; background: #f8fafc; }
+    .day-card.is-rest { opacity: 0.45; }
 
     .day-name {
-      font-size: 0.62rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      color: #94a3b8;
-      margin-bottom: 0.15rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.1rem;
     }
 
-    .day-date {
-      font-size: 0.72rem;
-      color: #94a3b8;
-      margin-bottom: 0.4rem;
-    }
+    .day-date { font-size: 0.7rem; color: var(--very-muted); margin-bottom: 0.4rem; }
 
-    .day-workout {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: #1e293b;
-      line-height: 1.4;
-    }
+    .day-workout { font-size: 0.78rem; font-weight: 500; color: var(--off-white); line-height: 1.4; }
 
     .day-extra {
       font-size: 0.68rem;
-      color: #64748b;
+      color: var(--muted);
       margin-top: 0.3rem;
       padding-top: 0.3rem;
-      border-top: 1px solid #f1f5f9;
+      border-top: 1px solid var(--card-border);
     }
 
     .day-miles {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: #0f172a;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      color: var(--neon);
       margin-top: 0.4rem;
+      letter-spacing: 0.05em;
     }
 
     /* ── FULL PLAN TABLE ── */
@@ -288,25 +293,26 @@
     table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
 
     th {
-      background: #0f172a;
-      color: #94a3b8;
+      background: #000;
+      color: var(--muted);
       padding: 0.55rem 0.7rem;
       text-align: left;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
       white-space: nowrap;
     }
 
     td {
       padding: 0.55rem 0.7rem;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid var(--card-border);
       vertical-align: top;
       line-height: 1.5;
+      color: var(--off-white);
     }
 
-    tr:hover td { background: #f8fafc; }
-    tr.current-week td { background: #fff7ed; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    tr.current-week td { background: rgba(57,255,20,0.04); }
 
     .td-workout { max-width: 150px; min-width: 110px; }
 
@@ -324,20 +330,20 @@
     .coaching-note {
       font-size: 0.82rem;
       padding: 0.5rem 0.75rem;
-      background: #f8fafc;
-      border-radius: 0.5rem;
+      background: #0f0f0f;
+      border: 1px solid var(--card-border);
+      border-radius: 0.4rem;
       margin-bottom: 0.4rem;
-      color: #334155;
+      color: var(--muted);
       line-height: 1.5;
     }
 
     /* ── NUTRITION ── */
     .section-header {
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      color: #94a3b8;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      color: var(--neon);
       margin: 1.5rem 0 0.6rem;
     }
 
@@ -350,31 +356,37 @@
     }
 
     .nutrition-card {
-      background: white;
-      border-radius: 0.75rem;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-left: 3px solid;
+      border-radius: 0.5rem;
       padding: 1rem;
-      border-left: 4px solid;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
-    .nutrition-card h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .nutrition-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      color: var(--off-white);
+      margin-bottom: 0.2rem;
+    }
 
     .nutrition-target {
-      font-size: 0.95rem;
-      font-weight: 800;
+      font-size: 0.9rem;
+      font-weight: 700;
       margin-bottom: 0.25rem;
       white-space: pre-line;
       line-height: 1.3;
     }
 
-    .nutrition-why { font-size: 0.75rem; color: #64748b; }
+    .nutrition-why { font-size: 0.75rem; color: var(--muted); }
 
     .nutrition-sources {
       font-size: 0.72rem;
-      color: #64748b;
+      color: var(--muted);
       margin-top: 0.5rem;
       padding-top: 0.5rem;
-      border-top: 1px solid #f1f5f9;
+      border-top: 1px solid var(--card-border);
     }
 
     /* ── TIMELINE ── */
@@ -386,8 +398,8 @@
       left: 0.35rem;
       top: 0.5rem;
       bottom: 0;
-      width: 2px;
-      background: #e2e8f0;
+      width: 1px;
+      background: var(--card-border);
     }
 
     .timeline-item { position: relative; padding: 0.5rem 0; }
@@ -397,23 +409,21 @@
       position: absolute;
       left: -1.05rem;
       top: 0.85rem;
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: #fb923c;
-      border: 2px solid white;
-      box-shadow: 0 0 0 2px #fb923c;
+      background: var(--neon);
+      box-shadow: 0 0 6px rgba(57,255,20,0.8);
     }
 
     .timeline-time {
-      font-size: 0.68rem;
-      font-weight: 800;
-      color: #fb923c;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: var(--neon);
     }
 
-    .timeline-action { font-size: 0.83rem; color: #1e293b; line-height: 1.4; }
+    .timeline-action { font-size: 0.83rem; color: var(--muted); line-height: 1.4; }
 
     /* ── PRINCIPLES ── */
     .principle {
@@ -421,21 +431,23 @@
       gap: 0.75rem;
       align-items: flex-start;
       padding: 0.7rem 0.75rem;
-      background: #f8fafc;
-      border-radius: 0.5rem;
+      background: #0f0f0f;
+      border: 1px solid var(--card-border);
+      border-radius: 0.4rem;
       margin-bottom: 0.4rem;
       font-size: 0.83rem;
       line-height: 1.5;
+      color: var(--muted);
     }
 
     .principle-num {
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: #fb923c;
-      background: #fff7ed;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      color: #000;
+      background: var(--neon);
+      width: 22px;
+      height: 22px;
+      border-radius: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -451,25 +463,49 @@
     }
 
     .stat-card {
-      background: white;
-      border-radius: 0.75rem;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 0.5rem;
       padding: 1rem;
       text-align: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
-    .stat-value { font-size: 2rem; font-weight: 900; color: #fb923c; line-height: 1; }
-    .stat-label { font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+    .stat-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: var(--neon);
+      line-height: 1;
+      text-shadow: var(--neon-glow);
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-top: 0.25rem;
+    }
 
     /* ── PRE-TRAINING ── */
-    .pre-training {
-      text-align: center;
-      padding: 2.5rem 1rem;
+    .pre-training { text-align: center; padding: 2.5rem 1rem; }
+
+    .pre-big {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 6rem;
+      color: var(--neon);
+      line-height: 1;
+      text-shadow: var(--neon-glow);
     }
 
-    .pre-big { font-size: 5rem; font-weight: 900; color: #fb923c; line-height: 1; }
-    .pre-training h2 { font-size: 1.2rem; font-weight: 700; margin: 0.5rem 0 0.25rem; }
-    .pre-training p { color: #64748b; font-size: 0.88rem; }
+    .pre-training h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      color: var(--off-white);
+      margin: 0.5rem 0 0.25rem;
+    }
+
+    .pre-training p { color: var(--muted); font-size: 0.88rem; }
 
     /* ── CHART LEGEND ── */
     .chart-legend {
@@ -478,7 +514,7 @@
       gap: 0.5rem 1rem;
       margin-top: 0.75rem;
       padding-top: 0.75rem;
-      border-top: 1px solid #f1f5f9;
+      border-top: 1px solid var(--card-border);
     }
 
     .legend-item {
@@ -486,15 +522,197 @@
       align-items: center;
       gap: 0.35rem;
       font-size: 0.75rem;
-      color: #64748b;
+      color: var(--muted);
     }
 
-    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
 
     /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: var(--very-muted); border-radius: 2px; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 0.5rem;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .progress-labels { flex: 1; min-width: 160px; }
+    .progress-title { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em; color: var(--muted); }
+    .progress-nums  { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--off-white); line-height: 1; }
+    .progress-nums span { color: var(--neon); text-shadow: var(--neon-glow); }
+
+    .progress-bar-wrap { flex: 2; min-width: 180px; }
+    .progress-bar-track {
+      background: var(--very-muted);
+      border-radius: 999px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--neon);
+      box-shadow: 0 0 8px rgba(57,255,20,0.5);
+      transition: width 0.4s ease;
+    }
+    .progress-pct { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── LOG BUTTON ── */
+    .log-btn {
+      display: block;
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.3rem 0;
+      border-radius: 3px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .log-btn:hover { border-color: var(--neon); color: var(--neon); }
+    .log-btn.done  { background: var(--neon-dim); border-color: var(--neon); color: var(--neon); }
+    .day-card.is-done { border-color: rgba(57,255,20,0.3); }
+
+    /* ── TOOLS TAB ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1rem;
+    }
+
+    .form-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .input-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+
+    .tools-input {
+      flex: 1;
+      background: #0f0f0f;
+      border: 1px solid var(--card-border);
+      border-radius: 0.4rem;
+      color: var(--off-white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.75rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .tools-input:focus { border-color: var(--neon); }
+
+    .tools-select {
+      background: #0f0f0f;
+      border: 1px solid var(--card-border);
+      border-radius: 0.4rem;
+      color: var(--off-white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.5rem;
+      outline: none;
+    }
+
+    .tools-btn {
+      background: var(--neon);
+      color: #000;
+      border: none;
+      border-radius: 0.4rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      padding: 0 1rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    .tools-btn:hover { opacity: 0.85; }
+    .tools-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--neon);
+      color: var(--neon);
+    }
+
+    .tools-result {
+      background: #0f0f0f;
+      border: 1px solid var(--card-border);
+      border-radius: 0.4rem;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .tools-result .result-highlight {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      color: var(--neon);
+      text-shadow: var(--neon-glow);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .weather-display {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: #0f0f0f;
+      border: 1px solid var(--card-border);
+      border-radius: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .weather-temp {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: var(--neon);
+      text-shadow: var(--neon-glow);
+      line-height: 1;
+    }
+
+    .weather-adj {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .weather-adj strong { color: var(--off-white); }
+
+    .adj-badge {
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-top: 0.2rem;
+    }
+
+    .profile-saved {
+      font-size: 0.75rem;
+      color: var(--neon);
+      margin-top: 0.3rem;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -531,6 +749,7 @@
     <button onclick="showTab('paces', this)">Pace Guide</button>
     <button onclick="showTab('nutrition', this)">Nutrition</button>
     <button onclick="showTab('mileage', this)">Mileage</button>
+    <button onclick="showTab('tools', this)">Tools</button>
   </nav>
 </header>
 
@@ -540,6 +759,7 @@
   <div id="paces"     class="tab-panel"></div>
   <div id="nutrition" class="tab-panel"></div>
   <div id="mileage"   class="tab-panel"></div>
+  <div id="tools"     class="tab-panel"></div>
 </main>
 
 <script>
@@ -551,23 +771,23 @@ const RACE_DATE      = new Date('2026-08-23');
 const TRAINING_START = new Date('2026-05-04');
 
 const PHASE = {
-  'Base':      { bg: '#dbeafe', color: '#1d4ed8' },
-  'Build':     { bg: '#dcfce7', color: '#15803d' },
-  'Peak':      { bg: '#fee2e2', color: '#b91c1c' },
-  'Cutback':   { bg: '#fef9c3', color: '#92400e' },
-  'Taper':     { bg: '#f3e8ff', color: '#7e22ce' },
-  'Race Week': { bg: '#ffe4e6', color: '#9f1239' },
+  'Base':      { bg: '#0d1f3c', color: '#60a5fa' },
+  'Build':     { bg: '#0d2218', color: '#4ade80' },
+  'Peak':      { bg: '#2d0d0d', color: '#f87171' },
+  'Cutback':   { bg: '#2a1e00', color: '#fbbf24' },
+  'Taper':     { bg: '#1a0d2d', color: '#c084fc' },
+  'Race Week': { bg: '#1a0010', color: '#39FF14' },
 };
 
 const WTYPE = {
-  easy:      { bg: '#dcfce7', color: '#15803d', label: 'Easy'          },
-  long:      { bg: '#dbeafe', color: '#1d4ed8', label: 'Long Run'      },
-  intervals: { bg: '#ffedd5', color: '#c2410c', label: 'Intervals'     },
-  vo2:       { bg: '#fee2e2', color: '#b91c1c', label: 'VO2 Max'       },
-  tempo:     { bg: '#f3e8ff', color: '#7e22ce', label: 'Tempo'         },
-  mp:        { bg: '#e0e7ff', color: '#4338ca', label: 'Marathon Pace' },
-  rest:      { bg: '#f1f5f9', color: '#64748b', label: 'Rest'          },
-  race:      { bg: '#fce7f3', color: '#be185d', label: 'RACE DAY'      },
+  easy:      { bg: '#0d2218', color: '#4ade80', label: 'Easy'          },
+  long:      { bg: '#0d1f3c', color: '#60a5fa', label: 'Long Run'      },
+  intervals: { bg: '#2a1200', color: '#fb923c', label: 'Intervals'     },
+  vo2:       { bg: '#2d0d0d', color: '#f87171', label: 'VO2 Max'       },
+  tempo:     { bg: '#1a0d2d', color: '#c084fc', label: 'Tempo'         },
+  mp:        { bg: '#0f0d2d', color: '#818cf8', label: 'Marathon Pace' },
+  rest:      { bg: '#111111', color: '#4a4a4a', label: 'Rest'          },
+  race:      { bg: '#0a1a00', color: '#39FF14', label: 'RACE DAY'      },
 };
 
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -810,6 +1030,263 @@ const keyPrinciples = [
 ];
 
 // ================================================================
+// STATE  (persists across page refreshes via localStorage)
+// ================================================================
+
+const state = {
+  get completed()   { return JSON.parse(localStorage.getItem('mtp_completed')   || '[]'); },
+  set completed(v)  { localStorage.setItem('mtp_completed',   JSON.stringify(v)); },
+  get weight()      { return parseFloat(localStorage.getItem('mtp_weight')      || '0'); },
+  set weight(v)     { localStorage.setItem('mtp_weight',      String(v)); },
+  get weightUnit()  { return localStorage.getItem('mtp_weight_unit')            || 'lbs'; },
+  set weightUnit(v) { localStorage.setItem('mtp_weight_unit', v); },
+  get weatherKey()  { return localStorage.getItem('mtp_weather_key')            || ''; },
+  set weatherKey(v) { localStorage.setItem('mtp_weather_key', v); },
+};
+
+// Convert stored weight to kg for all calculations
+function weightKg() {
+  if (!state.weight) return 0;
+  return state.weightUnit === 'lbs' ? state.weight / 2.205 : state.weight;
+}
+
+// ── WORKOUT LOGGER ──────────────────────────────────────────────
+
+function workoutKey(weekNum, day) { return `${weekNum}-${day}`; }
+
+function isDone(weekNum, day) {
+  return state.completed.includes(workoutKey(weekNum, day));
+}
+
+function toggleWorkout(weekNum, day) {
+  const key  = workoutKey(weekNum, day);
+  const list = state.completed;
+  const idx  = list.indexOf(key);
+  if (idx === -1) list.push(key); else list.splice(idx, 1);
+  state.completed = list;
+  renderThisWeek();         // refresh the week view
+  renderProgressBar();      // refresh the bar
+}
+
+// ── PROGRESS BAR ────────────────────────────────────────────────
+
+function renderProgressBar() {
+  const ts  = getTrainingState();
+  const bar = document.getElementById('progress-bar-wrap');
+  if (!bar || ts.state !== 'training') return;
+
+  const week       = ts.week;
+  const totalMiles = week.totalMiles;
+  const doneMiles  = DAYS
+    .filter(d => isDone(week.week, d) && week[d].miles > 0)
+    .reduce((sum, d) => sum + week[d].miles, 0);
+  const pct = totalMiles > 0 ? Math.min(100, Math.round((doneMiles / totalMiles) * 100)) : 0;
+
+  bar.innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-labels">
+        <div class="progress-title">This Week's Miles</div>
+        <div class="progress-nums"><span>${doneMiles}</span> / ${totalMiles} mi</div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="progress-pct">${pct}% complete · ${DAYS.filter(d => isDone(week.week, d) && week[d].miles > 0).length} of ${DAYS.filter(d => week[d].miles > 0).length} runs logged</div>
+      </div>
+    </div>`;
+}
+
+// ── WEATHER ─────────────────────────────────────────────────────
+
+let weatherCache = null;   // { temp, humidity, desc, adj, fetched }
+
+function heatAdjustment(tempF, humidity) {
+  let adj = 0;
+  if (tempF >= 85)      adj += 45;
+  else if (tempF >= 80) adj += 30;
+  else if (tempF >= 75) adj += 20;
+  else if (tempF >= 70) adj += 15;
+  else if (tempF >= 65) adj += 10;
+  else if (tempF >= 60) adj += 5;
+  if (humidity >= 80)   adj += 10;
+  else if (humidity >= 70) adj += 5;
+  return adj;
+}
+
+function adjColor(adj) {
+  if (adj === 0)  return '#4ade80';
+  if (adj <= 10)  return '#fbbf24';
+  if (adj <= 25)  return '#fb923c';
+  return '#f87171';
+}
+
+function adjLabel(adj) {
+  if (adj === 0)  return '✓ No adjustment needed';
+  if (adj <= 10)  return `+${adj} sec/mi — mild heat`;
+  if (adj <= 25)  return `+${adj} sec/mi — add caution`;
+  return `+${adj} sec/mi — run easy or move indoors`;
+}
+
+async function fetchWeather() {
+  if (!state.weatherKey) return;
+  return new Promise((resolve) => {
+    navigator.geolocation.getCurrentPosition(async pos => {
+      try {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${state.weatherKey}&units=imperial`;
+        const res  = await fetch(url);
+        const data = await res.json();
+        if (data.cod !== 200) { resolve(null); return; }
+        const temp     = Math.round(data.main.temp);
+        const humidity = data.main.humidity;
+        const desc     = data.weather[0].description;
+        const adj      = heatAdjustment(temp, humidity);
+        weatherCache   = { temp, humidity, desc, adj, city: data.name, fetched: new Date() };
+        resolve(weatherCache);
+      } catch { resolve(null); }
+    }, () => resolve(null));
+  });
+}
+
+// ── TOOLS TAB ───────────────────────────────────────────────────
+
+function saveProfile() {
+  const w    = parseFloat(document.getElementById('weight-val').value);
+  const unit = document.getElementById('weight-unit').value;
+  if (!w || w <= 0) return;
+  state.weight     = w;
+  state.weightUnit = unit;
+  document.getElementById('profile-saved').style.display = 'block';
+  setTimeout(() => { document.getElementById('profile-saved').style.display = 'none'; }, 2000);
+  renderNutrition();   // refresh macros
+}
+
+async function saveAndFetchWeather() {
+  const key = document.getElementById('weather-key-input').value.trim();
+  if (!key) return;
+  state.weatherKey = key;
+  document.getElementById('weather-fetch-btn').textContent = 'Fetching…';
+  const w = await fetchWeather();
+  document.getElementById('weather-fetch-btn').textContent = 'Fetch Weather';
+  if (w) {
+    renderWeatherDisplay('weather-result');
+    renderPaces();   // refresh pace tab with adjustments
+  } else {
+    document.getElementById('weather-result').innerHTML =
+      '<div class="tools-result">Could not fetch weather. Check your API key and allow location access when prompted.</div>';
+  }
+}
+
+function renderWeatherDisplay(targetId) {
+  const el = document.getElementById(targetId);
+  if (!el || !weatherCache) return;
+  const c = weatherCache;
+  const color = adjColor(c.adj);
+  el.innerHTML = `
+    <div class="weather-display">
+      <div class="weather-temp">${c.temp}°F</div>
+      <div class="weather-adj">
+        <strong>${c.city} · ${c.humidity}% humidity · ${c.desc}</strong><br>
+        <span class="adj-badge" style="background:${color}22;color:${color}">${adjLabel(c.adj)}</span>
+      </div>
+    </div>`;
+}
+
+function calcSweatRate() {
+  const pre  = parseFloat(document.getElementById('sweat-pre').value);
+  const post = parseFloat(document.getElementById('sweat-post').value);
+  const dur  = parseFloat(document.getElementById('sweat-dur').value);
+  const drank = parseFloat(document.getElementById('sweat-drank').value) || 0;
+  if (!pre || !post || !dur) return;
+
+  const lostLbs   = pre - post;
+  const lostOz    = lostLbs * 16;
+  const totalLost = lostOz + drank;                  // total sweat (oz)
+  const ratePerHr = Math.round(totalLost / (dur / 60));
+  const rehydrate = Math.round(lostOz * 1.5);        // 150% rule
+  const perMile   = dur > 0 ? Math.round(totalLost / (dur / 60) / (dur / 60)) : 0;
+
+  document.getElementById('sweat-result').innerHTML = `
+    <div class="tools-result">
+      <span class="result-highlight">${ratePerHr} oz/hr sweat rate</span>
+      <strong style="color:var(--off-white)">To rehydrate:</strong> drink ~${rehydrate} oz (${Math.round(rehydrate/8)} cups) over the next 2–3 hours<br>
+      <strong style="color:var(--off-white)">Future long runs:</strong> target ${ratePerHr} oz/hr while running<br>
+      <span style="font-size:0.75rem;color:var(--very-muted);margin-top:0.5rem;display:block">Based on ${lostLbs.toFixed(1)} lbs lost · pee should be pale yellow within 2–3 hrs</span>
+    </div>`;
+}
+
+function renderTools() {
+  const savedW    = state.weight   ? `${state.weight} ${state.weightUnit}` : 'Not set';
+  const savedKey  = state.weatherKey ? '••••••••' + state.weatherKey.slice(-4) : '';
+
+  document.getElementById('tools').innerHTML = `
+    <div class="tools-grid">
+
+      <!-- PROFILE -->
+      <div class="card">
+        <div class="card-title">My Profile</div>
+        <div class="card-subtitle">Your weight personalizes all macro + hydration targets in the Nutrition tab</div>
+
+        <label class="form-label">Body Weight ${state.weight ? `<span style="color:var(--neon)">· Saved: ${savedW}</span>` : ''}</label>
+        <div class="input-row">
+          <input class="tools-input" id="weight-val" type="number" placeholder="${state.weight || 'e.g. 160'}" />
+          <select class="tools-select" id="weight-unit">
+            <option value="lbs" ${state.weightUnit==='lbs'?'selected':''}>lbs</option>
+            <option value="kg"  ${state.weightUnit==='kg' ?'selected':''}>kg</option>
+          </select>
+          <button class="tools-btn" onclick="saveProfile()">Save</button>
+        </div>
+        <div class="profile-saved" id="profile-saved">✓ Saved — Nutrition tab updated</div>
+      </div>
+
+      <!-- WEATHER -->
+      <div class="card">
+        <div class="card-title">Weather & Pace Adjustment</div>
+        <div class="card-subtitle">Fetches live weather at your location and adjusts paces automatically in the Pace Guide tab</div>
+
+        <label class="form-label">OpenWeatherMap API Key
+          <a href="https://openweathermap.org/api" target="_blank" style="color:var(--neon);font-size:0.68rem;margin-left:0.4rem">Get free key →</a>
+        </label>
+        <div class="input-row">
+          <input class="tools-input" id="weather-key-input" type="password" placeholder="${savedKey || 'Paste API key here'}" />
+          <button class="tools-btn" id="weather-fetch-btn" onclick="saveAndFetchWeather()">Fetch Weather</button>
+        </div>
+        <div id="weather-result"></div>
+      </div>
+
+      <!-- SWEAT RATE -->
+      <div class="card">
+        <div class="card-title">Sweat Rate Calculator</div>
+        <div class="card-subtitle">Weigh yourself before and after a run to find your personal fluid needs</div>
+
+        <label class="form-label">Pre-run weight (lbs)</label>
+        <div class="input-row">
+          <input class="tools-input" id="sweat-pre" type="number" step="0.1" placeholder="e.g. 161.5" />
+        </div>
+
+        <label class="form-label">Post-run weight (lbs)</label>
+        <div class="input-row">
+          <input class="tools-input" id="sweat-post" type="number" step="0.1" placeholder="e.g. 159.0" />
+        </div>
+
+        <label class="form-label">Run duration (minutes)</label>
+        <div class="input-row">
+          <input class="tools-input" id="sweat-dur" type="number" placeholder="e.g. 90" />
+        </div>
+
+        <label class="form-label">Fluid consumed during run (oz) — optional</label>
+        <div class="input-row">
+          <input class="tools-input" id="sweat-drank" type="number" placeholder="e.g. 16" />
+          <button class="tools-btn" onclick="calcSweatRate()">Calculate</button>
+        </div>
+        <div id="sweat-result"></div>
+      </div>
+
+    </div>`;
+}
+
+// ================================================================
 // HELPERS
 // ================================================================
 
@@ -932,7 +1409,8 @@ function renderThisWeek() {
     return;
   }
 
-  el.innerHTML = weekCard(ts.week, ts.todayName);
+  el.innerHTML = `<div id="progress-bar-wrap"></div>` + weekCard(ts.week, ts.todayName);
+  renderProgressBar();
 }
 
 function weekCard(week, todayName) {
@@ -957,6 +1435,7 @@ function weekCard(week, todayName) {
       <div class="day-workout">${d.workout}</div>
       ${d.extra ? `<div class="day-extra">+ ${d.extra}</div>` : ''}
       ${d.miles > 0 ? `<div class="day-miles">${d.miles} mi</div>` : ''}
+      ${d.type !== 'rest' ? `<button class="log-btn ${isDone(week.week, day) ? 'done' : ''}" onclick="toggleWorkout(${week.week},'${day}')">${isDone(week.week, day) ? '✓ Done' : 'Mark Done'}</button>` : ''}
     </div>`;
   }).join('');
 
@@ -1032,7 +1511,43 @@ function renderPaces() {
 
   const notes = coachingNotes.map(n => `<div class="coaching-note">• ${n}</div>`).join('');
 
+  const weatherSection = weatherCache ? (() => {
+    const c   = weatherCache;
+    const adj = c.adj;
+    const color = adjColor(adj);
+    const adjRows = adj === 0 ? '' : paceTargets.map(p => {
+      const [minLo, minHi] = p.mi.split(' – ').map(s => {
+        const [m, sec] = s.split(':').map(Number);
+        return m * 60 + sec;
+      });
+      const adjLo = `${Math.floor((minLo + adj) / 60)}:${String((minLo + adj) % 60).padStart(2,'0')}`;
+      const adjHi = minHi
+        ? ` – ${Math.floor((minHi + adj) / 60)}:${String((minHi + adj) % 60).padStart(2,'0')}`
+        : '';
+      return `<tr>
+        <td><span class="effort-dot" style="background:${p.color}"></span><strong>${p.type}</strong></td>
+        <td style="text-decoration:line-through;color:var(--very-muted)">${p.mi}</td>
+        <td style="color:${color};font-weight:700">${adjLo}${adjHi}</td>
+        <td style="color:var(--muted);font-size:0.75rem">+${adj} sec/mi heat adjustment</td>
+      </tr>`;
+    }).join('');
+
+    return `<div class="card">
+      <div class="card-title">Today's Adjusted Paces</div>
+      <div class="card-subtitle">${c.city} · ${c.temp}°F · ${c.humidity}% humidity · ${c.desc}</div>
+      ${adj === 0
+        ? `<div style="color:var(--neon);font-size:0.88rem">✓ Perfect running weather — no pace adjustments needed</div>`
+        : `<div class="table-wrap"><table>
+            <thead><tr><th>Workout Type</th><th>Planned</th><th>Adjusted</th><th>Reason</th></tr></thead>
+            <tbody>${adjRows}</tbody>
+           </table></div>`}
+    </div>`;
+  })() : `<div class="card" style="color:var(--muted);font-size:0.85rem">
+    Add your OpenWeatherMap API key in the <strong style="color:var(--off-white)">Tools</strong> tab to see live heat-adjusted paces here.
+  </div>`;
+
   document.getElementById('paces').innerHTML = `
+    ${weatherSection}
     <div class="card">
       <div class="card-title">Pace Targets — Sub-3:40</div>
       <div class="card-subtitle">Marathon Pace: 8:23/mi &nbsp;·&nbsp; Race: Aug 23, 2026</div>
@@ -1054,7 +1569,22 @@ function renderPaces() {
 // ================================================================
 
 function renderNutrition() {
-  const targets = dailyTargets.map(d => `
+  const kg = weightKg();
+  const personalizedTargets = dailyTargets.map(d => {
+    let target = d.target;
+    if (kg > 0) {
+      if (d.name === 'Carbohydrates') target = `${Math.round(5*kg)}–${Math.round(7*kg)}g/day\n(5–7 g/kg at your weight)`;
+      if (d.name === 'Protein')       target = `${Math.round(1.4*kg)}–${Math.round(1.7*kg)}g/day\n(1.4–1.7 g/kg at your weight)`;
+      if (d.name === 'Fat')           target = `${Math.round(0.8*kg)}–${Math.round(1.0*kg)}g/day\n(0.8–1.0 g/kg at your weight)`;
+    }
+    return { ...d, target };
+  });
+
+  const weightNote = kg > 0
+    ? `<div style="font-size:0.75rem;color:var(--neon);margin-bottom:0.75rem">✓ Targets personalized for ${state.weight} ${state.weightUnit} — update in the Tools tab</div>`
+    : `<div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.75rem">Enter your weight in the Tools tab to get personalized targets</div>`;
+
+  const targets = personalizedTargets.map(d => `
     <div class="nutrition-card" style="border-color:${d.color}">
       <h3>${d.name}</h3>
       <div class="nutrition-target" style="color:${d.color}">${d.target}</div>
@@ -1092,6 +1622,7 @@ function renderNutrition() {
 
   document.getElementById('nutrition').innerHTML = `
     <div class="section-header">Daily Targets (Training Days)</div>
+    ${weightNote}
     <div class="nutrition-grid">${targets}</div>
 
     <div class="section-header">Around the Run</div>
@@ -1225,6 +1756,14 @@ renderFullPlan();
 renderPaces();
 renderNutrition();
 renderMileage();
+renderTools();
+
+// Auto-fetch weather on load if API key is already saved
+if (state.weatherKey) {
+  fetchWeather().then(w => {
+    if (w) { renderPaces(); renderWeatherDisplay('weather-result'); }
+  });
+}
 </script>
 </body>
 </html>
